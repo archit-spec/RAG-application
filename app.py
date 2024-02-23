@@ -42,13 +42,9 @@ def chating():
     return jsonify(output=output['choices'][0]['text'])
 
 
-@app.route("/getcaptions", methods=["GET"])
+@app.route("/getembeddings", methods=["GET"])
 def getcaptions():
-    imagec = ImageCaptioning()
-    d = imagec.make_index()
-    resp = jsonify(d)
-    resp.status_code = 200
-    return resp
+    return 0
 
 
 
