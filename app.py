@@ -1,7 +1,8 @@
 from flask import Flask, render_template, request, send_from_directory, render_template, jsonify
 import os
 from flask_cors import CORS
-from src.captioning  import ImageCaptioning 
+from src.index  import ...
+from src.doc_process ...
 
 UPLOAD_FOLDER = "uploads"
 app = Flask(__name__)
@@ -38,7 +39,8 @@ def chating():
     chat = request.form.get("chat")
     from_user = request.form.get("from_user")
     llm = Llama(model_path="/home/dumball/codellama-7b-instruct.Q2_K.gguf")
-    output = llm(f"user: {chat} Assistant: ", max_tokens=32, stop=["Q:", "\n"], echo=True)
+    context = getcontex()
+    output = llm(f"{context}  user: {chat} Assistant: ", max_tokens=32, stop=["Q:", "\n"], echo=True)
     return jsonify(output=output['choices'][0]['text'])
 
 
