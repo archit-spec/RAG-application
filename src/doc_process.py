@@ -42,6 +42,3 @@ class PDFProcessor:
 
 
 
-pdf_processor = PDFProcessor("./87286_92960v00_Decoding_Wireless.pdf")
-a =  pdf_processor.process_pdf()
-print(a)
