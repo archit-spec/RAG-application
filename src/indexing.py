@@ -1,66 +1,53 @@
-# For RAG
-from docy import PDFProcessor
-import faiss
-#import torch.nn.functional as F
-#from torch.utils.data import DataLoader
-#from datasets import load_from_disk, dataset
 import numpy as np
+import faiss
+import torch
+from transformers import AutoTokenizer, AutoModel
+#from docy import PDFProcessor
 
-#pdf_processor = PDFProcessor("./87286_92960v00_Decoding_Wireless.pdf")
-#chunks = pdf_processor.chunk_text(100)  # Chunk size of 100 characters
+class TextSearch:
+    def __init__(self, texts, model_name='distilbert-base-uncased'):
+        # Initialize the tokenizer and model from Hugging Face
+        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
+        self.model = AutoModel.from_pretrained(model_name)
+        
+        # Encode the texts
+        self.texts = texts
+        self.text_embeddings = self._encode_texts(texts)
+
+        # Dimension of the vectors
+        self.d = self.text_embeddings.shape[1]
+
+        # Create a FAISS index
+        self.index = faiss.IndexFlatL2(self.d)
+        # Add the text embeddings to the FAISS index
+        self.index.add(self.text_embeddings)
+    
+    def _encode_texts(self, texts):
+        # Tokenize input texts
+        encoded_input = self.tokenizer(texts, padding=True, truncation=True, return_tensors='pt')
+        # Get the model's last hidden states
+        with torch.no_grad():
+            model_output = self.model(**encoded_input)
+        # Mean pooling here, but you can also try max pooling or CLS token
+        return model_output.last_hidden_state.mean(dim=1).cpu().numpy()
+    
+    def search(self, query, k=2):
+        # Encode the query
+        query_embedding = self._encode_texts([query])[0]
+        # Search the index
+        distances, indices = self.index.search(np.array([query_embedding]), len(self.texts))
+        # Return the indices of the texts along with their distances, sorted by similarity
+        ranked_texts = {self.texts[i]:distances[0][j] for j, i in sorted(enumerate(indices[0]), key=lambda x: x[1])}
+        #ranked_texts = {(self.texts[i], distances[0][j]) for j, i in sorted(enumerate(indices[0]), key=lambda x: x[1])}
+
+        top_indices = dict(sorted(ranked_texts.items(), key=lambda item: item[1])[:k])
+
+        return ranked_texts, top_indices
+
+# Example usage:
+
+# Print the ranked search results
+#for rank, (text, distance) in enumerate(results):
 
 
-def build_index(string_list):
-    """
-    Build an index for a list of strings.
-    
-    Args:
-    - string_list (list): List of strings to build the index from.
-    
-    Returns:
-    - index (faiss.IndexFlatL2): Index built from the strings.
-    - string_embeddings (np.array): Embeddings of the strings.
-    """
-    # Convert strings to embeddings
-    string_embeddings = np.zeros((len(string_list), 256))  # Example: Assuming embeddings of length 256
-    for i, string in enumerate(string_list):
-        string_embeddings[i] = np.random.rand(256)  # Example: Replace with actual embedding generation
-    
-    # Build index
-    index = faiss.IndexFlatL2(string_embeddings.shape[1])
-    index.add(string_embeddings)
-    
-    return index, string_embeddings
-
-def find_approximate_matches(query, index, string_list, string_embeddings, k=5):
-    """
-    Find approximate matches for a query within a list of strings using the built index.
-    
-    Args:
-    - query (str): The query string.
-    - index (faiss.IndexFlatL2): Index built from the strings.
-    - string_list (list): List of strings to search for matches.
-    - string_embeddings (np.array): Embeddings of the strings.
-    - k (int): Number of nearest neighbors to return (default: 5).
-    
-    Returns:
-    - matches (list): List of tuples (string, score) representing matches.
-    """
-    query_embedding = np.random.rand(256)  
-    
-    distances, indices = index.search(np.array([query_embedding]), k)
-    
-    # Retrieve matches
-    matches = [(string_list[i], distances[0][j]) for j, i in enumerate(indices[0])]
-    
-    return matches
-
-
-pdf_processor = PDFProcessor("./87286_92960v00_Decoding_Wireless.pdf")
-chunks = pdf_processor.chunk_text(400)  # Chunk size of 100 characters
-query = "radio"  # Intentionally misspelled query
-
-index, string_embeddings = build_index(chunks)
-matches = find_approximate_matches(query, index, chunks, string_embeddings)
-print(matches)
-
+#print(f'Rank {rank + 1}: Text: {text}, Distance: {distance}')
