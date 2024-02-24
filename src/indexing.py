@@ -58,7 +58,6 @@ def find_approximate_matches(query, index, string_list, string_embeddings, k=5):
 
 pdf_processor = PDFProcessor("./87286_92960v00_Decoding_Wireless.pdf")
 chunks = pdf_processor.chunk_text(400)  # Chunk size of 100 characters
-#chunks = ["hello", "whaterver", "apple", "car", "nigger"]
 query = "radio"  # Intentionally misspelled query
 
 index, string_embeddings = build_index(chunks)
