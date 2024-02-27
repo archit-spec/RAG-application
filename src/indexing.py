@@ -28,7 +28,7 @@ class TextSearch:
         # Mean pooling here, but you can also try max pooling or CLS token
         return model_output.last_hidden_state.mean(dim=1).cpu().numpy()
     
-    def search(self, query, k=2):
+    def search(self, query, k=5):
         # Encode the query
         query_embedding = self._encode_texts([query])[0]
         # Search the index

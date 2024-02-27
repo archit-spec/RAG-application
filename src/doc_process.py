@@ -39,6 +39,23 @@ class PDFProcessor:
         except Exception as e:
             return f"An error occurred: {e}"
         return all_text
+    
+
+
+    def chunk_text(self, chunk_size):
+        """Chunk the extracted text into smaller parts."""
+        extracted_text = self.process_text()
+        if isinstance(extracted_text, str):
+            return [extracted_text[i:i+chunk_size] for i in range(0, len(extracted_text), chunk_size)]
+        else:
+            return extracted_text
+
+    def process_text(self):
+        text = self.process_pdf()
+
+        text = text.replace("\n", "")
+        return text
+
 
 
 
