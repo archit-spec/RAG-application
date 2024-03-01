@@ -2,7 +2,7 @@
 name = "Rag app"
 version = "0.1.0"
 description = "rag application"
-authors = ["dumball archit1290@gmail.com"]
+authors = ["dumball <archit1290@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
