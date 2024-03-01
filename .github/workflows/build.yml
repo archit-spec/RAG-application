@@ -3,7 +3,7 @@ name: Build and Run Flask Application
 on:
   push:
     branches:
-      - dev  # Change this to match your main branch
+      - dev
 
 jobs:
   build:
@@ -13,14 +13,20 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Docker
+      - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: '3.9'
 
-      - name: Build Docker image
-        run: docker build -t my-flask-app .
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          export PATH="$HOME/.poetry/bin:$PATH"
+          poetry config virtualenvs.create false
 
-      - name: Run Docker container
-        run: docker run -d -p 5000:5000 my-flask-app
+      - name: Install dependencies
+        run: poetry install
+
+      - name: Run Flask application
+        run: poetry run python app.py
 
