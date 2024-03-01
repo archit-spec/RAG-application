@@ -9,8 +9,9 @@ from src.doc_process import PDFProcessor
 app = Flask(__name__)
 CORS(app)
 
-
-pdf_processor = PDFProcessor("./87286_92960v00_Decoding_Wireless.pdf")
+current_directory = os.path.dirname(os.path.abspath(__file__))
+pdf_path = os.path.join(current_directory, "src", "87286_92960v00_Decoding_Wireless.pdf")
+pdf_processor = PDFProcessor(pdf_path)
 corpus = pdf_processor.chunk_text(100)  # Chunk size of 100 characters
 text_search = TextSearch(corpus)
 
