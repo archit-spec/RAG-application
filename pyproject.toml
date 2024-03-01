@@ -13,8 +13,14 @@ PyPDF2 = "3.0.1"
 numpy = "1.26.4"
 llama_cpp_python = "0.2.50"
 faiss-cpu = "1.7.4"
-torch = {version = "2.0.1", markers = "sys_platform == 'linux' and platform_python_implementation == 'CPython' and not platform_machine.startswith('arm')"}
+#markers="python_implementation=='cpython' and not(platform_machine.startswith('arm'))"
+#markers = "sys_platform == 'linux' and python_implementation == 'cpython' and not platform_machine.startswith('arm')"
+#torch = { version = "2.0.1", markers = "python_implementation == 'cpython' and sys_platform == 'linux' and not platform_machine.startswith('arm')" }
+torch = { version = "2.0.1", markers = "sys_platform == 'linux' and platform_machine == 'x86_64'" }
 
+#torch = {version = "2.0.1", markers = "sys_platform == 'linux' and python_implementation == 'cpython' and not (platform_machine.startswith('arm'))"}
+#torch = {version = "2.0.1", markers = "sys_platform == 'linux' and platform_python_implementation == 'CPython' and not platform_machine.startswith('arm')"}
+#torch = {version = "2.0.1", markers = "sys_platform == 'linux' and platform_python_implementation == 'CPython' and not (platform_machine.startswith('arm'))"}
 #torch = {version = "2.0.1", markers = "platform_machine == 'x86_64' and platform_python_implementation == 'CPython'"}
 #torch = { version = "2.0.1", markers = "cpu" }
 
