@@ -1,20 +1,26 @@
-# Use a lightweight Python image as the base
-FROM python:3.9-slim
+# Use a lightweight Python image as the base (change version if needed)
+FROM python:3.11
 
-# Install Poetry
-RUN pip install --no-cache-dir poetry
+# Install uv
+RUN pip install uv
+
+
+# Update PATH to include uv installation directory
+ENV PATH="$PATH:$HOME/.cargo/bin"
+COPY requirements.txt .
+
+RUN uv venv
+# Install dependencies using uv pip
+RUN uv pip install -r requirements.txt
+
+
+# Install dependencies using uv pip
+#RUN uv pip install --no-dev --no-interaction --no-ansi -r requirements.txt
 
 # Set the working directory inside the container
 WORKDIR /app
 
-# Copy only the dependency files necessary for installing dependencies
-COPY pyproject.toml poetry.lock ./
-
-# Install dependencies using Poetry
-RUN poetry config virtualenvs.create false \
-    && poetry install --no-dev --no-interaction --no-ansi
-
-# Copy the rest of the application code into the container
+# Copy the application code and requirements.txt
 COPY . .
 
 # Expose port 5000 for Flask application
