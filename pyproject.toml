@@ -17,7 +17,7 @@ faiss-cpu = "1.7.4"
 #markers = "sys_platform == 'linux' and python_implementation == 'cpython' and not platform_machine.startswith('arm')"
 #torch = { version = "2.0.1", markers = "python_implementation == 'cpython' and sys_platform == 'linux' and not platform_machine.startswith('arm')" }
 #torch = { version = "2.0.1+cpu", markers = "sys_platform == 'linux' and platform_machine == 'x86_64'" }
-torch = { version = "2.0.1+cpu", markers = "sys_platform == 'linux'" }
+torch = { version = "2.0.1", markers = "sys_platform == 'linux'" }
 #torch = {version = "2.0.1", markers = "sys_platform == 'linux' and python_implementation == 'cpython' and not (platform_machine.startswith('arm'))"}
 #torch = {version = "2.0.1", markers = "sys_platform == 'linux' and platform_python_implementation == 'CPython' and not platform_machine.startswith('arm')"}
 #torch = {version = "2.0.1", markers = "sys_platform == 'linux' and platform_python_implementation == 'CPython' and not (platform_machine.startswith('arm'))"}
