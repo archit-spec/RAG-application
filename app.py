@@ -29,9 +29,15 @@ def chat():
     #chat_input = data['chat']
 
     llm = Llama(model_path="/home/dumball/gemma-2b-it-q4_k_m.gguf")
-    output = llm(f"context: {top_texts} answers based on this context only \nuser: {chat_input}", max_tokens=60, stop=["Q:"], echo=True)
-    response = output
+    output = llm(f"""context: {top_texts} 
+              answers based on this context only 
+              ___________
+                 user: {chat_input}
+                 gemma:""", max_tokens=60, stop=["Q:"])
     
+    #response = output['choices'][0]['text']
+    response = output
+    #response = output['choices']
     return jsonify({'response': response})
 
 @app.route('/static/<path:path>')
