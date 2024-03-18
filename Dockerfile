@@ -1,25 +1,26 @@
-# Use a lightweight Python image as the base
-FROM python:3.9-slim
+# Use a lightweight Python image as the base (change version if needed)
+FROM python:3.11
+
+# Install uv
+RUN pip install uv
+
+
+# Update PATH to include uv installation directory
+ENV PATH="$PATH:$HOME/.cargo/bin"
+COPY requirements.txt .
+
+RUN uv venv
+# Install dependencies using uv pip
+RUN uv pip install -r requirements.txt
+
+
+# Install dependencies using uv pip
+#RUN uv pip install --no-dev --no-interaction --no-ansi -r requirements.txt
 
 # Set the working directory inside the container
 WORKDIR /app
 
-# Copy the requirements file into the container
-COPY requirements.txt .
-
-# Install necessary dependencies
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-        build-essential \
-        libopenblas-dev \
-        liblapack-dev \
-        libomp-dev \
-    && pip install --no-cache-dir -r requirements.txt \
-    && apt-get autoremove -y \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
-
-# Copy the Flask application code into the container
+# Copy the application code and requirements.txt
 COPY . .
 
 # Expose port 5000 for Flask application
